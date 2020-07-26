@@ -8,9 +8,9 @@ As most maintenance is expected to be performed by a non-programmer or informati
 specialist, the data-basis is kept to the absolute minimum. All information is
 stored in three types of files:
 
-    * *.txt files for the object metadata
-    * *.[jpg|png|gif] for images of the object
-    * *.comment for additional textual onformation of the object
+* *.txt files for the object metadata
+* *.[jpg|png|gif] for images of the object
+* *.comment for additional textual onformation of the object
     
 The filenames have additional structure: "*_XXXXXX.ext", where XXXXXX is a 
 system-unixte hexadecimal number shared by the one metadata file, all the images 
@@ -23,14 +23,14 @@ directory, used for a passive redirect level.
 The main content-generating file is perl/generateHtmlFiles.pl, which generates two
 files:
 
-    * an HTML object-file with the same name as the object metadata file containing
-      all information of the metadata file, references of the images and the
-      content of the comment files. This file will be written in the same directory 
-      as the source documents,
-    * an HTML file in the 'ref' directory containing a redirect to the HTML 
-      object-file. This allows for fixed URLs, independent of the actual location
-      of the files in the tree. The intention is to create QRCode labels attached
-      to the physical object.
+* an HTML object-file with the same name as the object metadata file containing
+  all information of the metadata file, references of the images and the
+  content of the comment files. This file will be written in the same directory 
+  as the source documents,
+* an HTML file in the 'ref' directory containing a redirect to the HTML 
+  object-file. This allows for fixed URLs, independent of the actual location
+  of the files in the tree. The intention is to create QRCode labels attached
+  to the physical object.
       
 F.J. Kraan, 2020-07-26
       
