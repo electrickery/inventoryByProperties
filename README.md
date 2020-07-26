@@ -31,6 +31,9 @@ files:
   object-file. This allows for fixed URLs, independent of the actual location
   of the files in the tree. The intention is to create QRCode labels attached
   to the physical object.
+  
+The 'perl/numgen.pl' and the 'theNumber.txt' file are part of the label generator, 
+which is not finished.
       
 F.J. Kraan, 2020-07-26
       
