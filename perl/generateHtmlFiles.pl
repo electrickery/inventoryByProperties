@@ -50,7 +50,8 @@ sub generateObjectPage() {
     open my $hfh, '>', $objectHtmlFile or die "Can't open file '" . $objectHtmlFile . "' $!";
     my $file_content = &getObjectHtmlTemplate();
     $file_content =~ s/%%TITLE%%/$title/;
-    $file_content =~ s/%%NAME%%/$title/;
+    my $titleName = &getDirs($objectTextFile) . " - " . $title;
+    $file_content =~ s/%%NAME%%/$titleName/;
     my $metadataTable = &generateMetadataTableTemplate($props);
     $file_content =~ s/%%METADATA%%/$metadataTable/;
     my $dir = dirname($objectTextFile);
@@ -71,7 +72,7 @@ sub generateMetadataTableTemplate() {
     my ($props) = @_;
     my $table_content = &getMetadataTableTemplate();
     my $tableRowSet = "";
-    my @propKeys = $props->propertyNames();
+    my @propKeys = sort($props->propertyNames());
     foreach(@propKeys) {
         my $key = $_;
         my $value = $props->getProperty($key);
@@ -258,4 +259,16 @@ sub time2timeStamp {
     my $second = $gmTimeArr[0];
     $second = substr("0".$second,-2,2);
     return "$year-$month-$mday $hour:$minute:$second";
+}
+
+sub getDirs() {
+    my ($path) = @_;
+    my($filename, $dirs, $suffix) =  fileparse($path, qr/\.[^.]*/);
+    return $dirs;
+}
+
+sub getsuffix() {
+    my ($path) = @_;
+    my($filename, $dirs, $suffix) =  fileparse($path, qr/\.[^.]*/);
+    return $suffix;
 }
