@@ -102,16 +102,11 @@ sub createHtmlFileName() {
 sub getObjMetaDataFiles($$) {
     my (@dirs) = @_;
     my $rule = Path::Iterator::Rule->new;
-#    $rule->skip_subdirs(qr/$refDir/)->file;
     my @files;
     for my $fileName ( $rule->all( @dirs ) ) {
         if ($fileName =~ m/^$refDir/) { next; }
-#        print "m $fileName m/$PROPFILEPATT/i \n";
         if ($fileName =~ m/$PROPFILEPATT/i) { # filter files ending with _XXXXXX.properties
-#            print " $fileName      <<<<<<< \n";
             push (@files, $fileName);
-#        } else {
-#            print "\n";
         }
     }
     return @files;
