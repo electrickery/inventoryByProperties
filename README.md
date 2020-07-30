@@ -8,16 +8,16 @@ As most maintenance is expected to be performed by a non-programmer or informati
 specialist, the data-basis is kept to the absolute minimum. All information is
 stored in three types of files:
 
-* *.txt files for the object metadata
+* *.properties file for the object metadata
 * *.[jpg|png|gif] for images of the object
-* *.comment for additional textual onformation of the object
+* *.txt for additional textual information on the object
     
 The filenames have additional structure: "*_XXXXXX.ext", where XXXXXX is a 
-system-unixte hexadecimal number shared by the one metadata file, all the images 
+system-unique hexadecimal number shared by the one metadata file, all the images 
 and one or more comment files. The part before the "_XXXXXX" is free, but it is
-encouraged to use the brand and model/type of the object, separated bu underscores.
-All files referring to the same object are expected in the same directory, but 
-the organisation of the directory tree is not fixed. The only exception is a 'ref'
+encouraged to use the brand and model/type of the object, separated by underscores.
+All files referring to the same object are expected in the same directory. 
+The organisation of the directory tree is not fixed, with as only exception a 'ref'
 directory, used for a passive redirect level.
 
 The main content-generating file is perl/generateHtmlFiles.pl, which generates two
@@ -35,5 +35,5 @@ files:
 The 'perl/numgen.pl' and the 'theNumber.txt' file are part of the label generator, 
 which is not finished.
       
-F.J. Kraan, 2020-07-26
+F.J. Kraan, 2020-07-30
       

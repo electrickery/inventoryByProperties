@@ -5,21 +5,28 @@ use Config::Properties;
 use File::Basename;
 use Path::Iterator::Rule;
 
-my @dirs = @ARGV;
-if (@dirs == 0) { push(@dirs, ".") };
-my $refDir = "ref/";
-my $objectUrlBase = "http://jaaks.be/inventaris/";
+our $SITEURL = "http://jaaks.be/inventaris/";
+our $PROPEXT = ".properties";
+our $PROPFILEPATT = "_([0-9A-F]{6})${PROPEXT}\$";
+our $COMMENTEXT = ".txt";
+our $COMMENTPATT = "_([0-9A-F]{6})${COMMENTEXT}\$";
 
-my @objectFiles = &getObjMetaDataFiles(@dirs, $refDir);
+my @dirs = @ARGV;
+if (@dirs == 0) { push(@dirs, "site") };
+our $refDir = "site/ref/";
+my $objectUrlBase = $SITEURL;
+
+my @objectFiles = &getObjMetaDataFiles(@dirs);
+print "objectCount: " . @objectFiles . "\n";
 
 foreach my $of (@objectFiles) {
 #    print "  > " . $of . "\n";
     my $props = Config::Properties->new(file => $of, order => 'keep');
     my $title = $props->getProperty('fabrikant') . " " . $props->getProperty('model', "") . " " . $props->getProperty('naam', "");
     $title =~ s/^\s+|\s+$//g;          # trim whitespace
-    $of =~ m/_([0-9A-Fa-f]{6})\.txt$/; # filter identifier
+    $of =~ m/$PROPFILEPATT/i; # filter identifier
     my $id = $1;
-#    print("'" . $title . "  " . $1 . "'\n");
+    print("'" . $title . "'  " . $id . "\n");
     &generateRefPage($refDir, $props, $objectUrlBase, $of);
     &generateObjectPage($of, $props);
 }
@@ -39,6 +46,7 @@ sub generateObjectPage() {
     my ($objectTextFile, $props) = @_;
     my $objectHtmlFile = &createHtmlFileName($objectTextFile);
     my $title = $props->getProperty('fabrikant') . " " . $props->getProperty('model', "") . " " . $props->getProperty('naam', "");
+    $title =~ s/^\s+|\s+$//g; # trim whitespace
     open my $hfh, '>', $objectHtmlFile or die "Can't open file '" . $objectHtmlFile . "' $!";
     my $file_content = &getObjectHtmlTemplate();
     $file_content =~ s/%%TITLE%%/$title/;
@@ -46,7 +54,7 @@ sub generateObjectPage() {
     my $metadataTable = &generateMetadataTableTemplate($props);
     $file_content =~ s/%%METADATA%%/$metadataTable/;
     my $dir = dirname($objectTextFile);
-    $objectTextFile =~ m/_([0-9A-Fa-f]{6})\.txt$/; # filter identifier
+    $objectTextFile =~ m/$PROPFILEPATT/; # filter identifier
     my $id = $1;
     my @types = ['jpg', 'png', 'gif'];
     my $imageSection = &getObjImageSection($dir, $id, ".", @types);
@@ -84,21 +92,23 @@ sub generateMetadataTableTemplate() {
 
 sub createHtmlFileName() {
     my ($objectTextFile) = @_;
-    my $objectHtmlFile = $objectTextFile;
-    $objectHtmlFile =~ s/\.[tT][xX][tT]$/.html/; # replace any-case txt-extension with html
+    my($filename, $dirs, $suffix) =  fileparse($objectTextFile, qr/\.[^.]*/);
+    my $objectHtmlFile = $dirs . "/" . $filename . ".html";
+    $objectHtmlFile =~ s/$PROPEXT$/.html/i; # replace any-case txt-extension with html
     $objectHtmlFile =~ s|^\./||; # remove prefixed './'
     return $objectHtmlFile;
 }
 
 sub getObjMetaDataFiles($$) {
-    my (@dirs, $excludeDir) = @_;
+    my (@dirs) = @_;
     my $rule = Path::Iterator::Rule->new;
-    $rule->skip_dirs($excludeDir)->file;
+#    $rule->skip_subdirs(qr/$refDir/)->file;
     my @files;
     for my $fileName ( $rule->all( @dirs ) ) {
-#        print $fileName;
-        if ($fileName =~ m/_[0-9A-Fa-f]{6}\.txt$/) { # filter files ending with _XXXXXX.txt
-            print $fileName . "\n";
+        if ($fileName =~ m/^$refDir/) { next; }
+#        print "m $fileName m/$PROPFILEPATT/i \n";
+        if ($fileName =~ m/$PROPFILEPATT/i) { # filter files ending with _XXXXXX.properties
+#            print " $fileName      <<<<<<< \n";
             push (@files, $fileName);
 #        } else {
 #            print "\n";
@@ -126,9 +136,9 @@ sub getObjImageFiles($$) {
     my @files;
     my $rule = Path::Iterator::Rule->new(order => 'keep');
     $rule->iname("*.jpg", "*.png", "*.gif");
-    my $idPattern = "_" . $id . ".";
+    my $idPattern = "_$id.";
     for my $fileName ( $rule->all( $dir ) ) {
-        if ($fileName =~ m/$idPattern/) {
+        if ($fileName =~ m/$idPattern/i) {
             $fileName = basename($fileName);
             push (@files, $fileName);
         }
@@ -164,10 +174,10 @@ sub getObjCommentFiles($$) {
     my ($dir, $id) = @_;
     my @files;
     my $rule = Path::Iterator::Rule->new(order => 'keep');
-    $rule->iname("*.comment");
+    $rule->iname("*" . $COMMENTEXT);
     my $idPattern = "_" . $id . ".";
     for my $fileName ( $rule->all( $dir ) ) {
-        if ($fileName =~ m/$idPattern/) {
+        if ($fileName =~ m/$idPattern/i) {
             push (@files, $fileName);
         }
     }
