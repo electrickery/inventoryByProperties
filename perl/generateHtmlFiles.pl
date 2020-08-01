@@ -5,16 +5,19 @@ use Config::Properties;
 use File::Basename;
 use Path::Iterator::Rule;
 
-our $SITEURL = "http://jaaks.be/inventaris/";
+#our $SITEURL = "http://jaaks.be/inventaris/";
+our $SITEHOST = "http://electrickery.connected.by.freedominter.net";
+our $SITEPATH = "/tmp/";
+our $LOCALPATH = "JaakSite";
 our $PROPEXT = ".properties";
 our $PROPFILEPATT = "_([0-9A-F]{6})${PROPEXT}\$";
 our $COMMENTEXT = ".txt";
 our $COMMENTPATT = "_([0-9A-F]{6})${COMMENTEXT}\$";
 
 my @dirs = @ARGV;
-if (@dirs == 0) { push(@dirs, "site") };
-our $refDir = "site/ref/";
-my $objectUrlBase = $SITEURL;
+if (@dirs == 0) { push(@dirs, "JaakSite") };
+our $refDir = "${LOCALPATH}/ref/";
+my $objectUrlBase = ${SITEHOST} . ${SITEPATH};
 
 my @objectFiles = &getObjMetaDataFiles(@dirs);
 print "objectCount: " . @objectFiles . "\n";
@@ -27,7 +30,7 @@ foreach my $of (@objectFiles) {
     $of =~ m/$PROPFILEPATT/i; # filter identifier
     my $id = $1;
     print("'" . $title . "'  " . $id . "\n");
-    &generateRefPage($refDir, $props, $objectUrlBase, $of);
+    &generateRefPage($refDir, $props, $SITEHOST . $SITEPATH, $of);
     &generateObjectPage($of, $props);
 }
 
@@ -37,7 +40,7 @@ sub generateRefPage() {
     my $refFileName = $refDir . basename($objectHtmlFile);
     open my $rfh, '>', $refFileName or die "Can't open file '" . $refFileName . "' $!";
     my $file_content = &getRefHtmlTemplate();
-    $file_content =~ s/%%OBJECTURL%%/${urlBase}${objectHtmlFile}/g;
+    $file_content =~ s/%%OBJECTURL%%/$urlBase${objectHtmlFile}/g;
     print $rfh $file_content . "\n";
     close $rfh;
 }

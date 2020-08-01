@@ -5,13 +5,14 @@ use warnings;
 
 our $numFile = "theNumber.txt";
 
-#y $descFile = "../dataVanJaak/boards.csv";
+#my $descFile = "../dataVanJaak/boards.csv";
 #my $descFile = "../dataVanJaak/ORG_IBMpc.csv";
-my $descFile = "../dataVanJaak/portables.csv";
-#my $location = "site/boards/";
-#my $location = "site/IBM/";
-my $location = "site/portables/";
-
+#my $descFile = "../dataVanJaak/portables.csv";
+my $descFile = "../dataVanJaak/ideHarddisks.csv";
+#my $location = "JaakSite/boards/";
+#my $location = "JaakSite/IBM/";
+#my $location = "JaakSite/portables/";
+my $location = "JaakSite/ideHarddisks/";
 
 
 unless (-r $descFile && -e $descFile) { die "$0: $descFile not found. aborting."; }
@@ -36,14 +37,14 @@ while ($line = <IFH>) {
                 $props{"id"} = &getNextNumber();
             } else {
                 if (defined($propValues[$i]) && $propValues[$i] ne "") {
-                    my $name = &sanitizeKey($propNames[$i]);
+                    my $name = &sanitizeString($propNames[$i]);
                     unless ($name =~ m/^\s*$/) {
                         $props{$name} = $propValues[$i];
                     }
                 }
             }
         }
-        my $fileName = $location . &createFileName(%props);
+        my $fileName = $location . &sanitizeString(&createFileName(%props));
         print "fileName: $fileName\n";
         open OFH, ">$fileName"  or die "$0: error opening \'$fileName\'";
         foreach my $key (keys %props) { print OFH "$key = $props{$key}\n"; }
@@ -100,8 +101,9 @@ sub getNextNumber() {
     return $file_content
 }
 
-sub sanitizeKey() {
+sub sanitizeString() {
     my ($name) = @_;
     $name =~ s/\s+/-/g;
+    $name =~ s/[\|\/:;=\$\!\@\#%\^\&\*\(\)\[\]]/_/g;
     return $name;
 }
