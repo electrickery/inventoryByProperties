@@ -10,10 +10,11 @@ patterns = [".+_[[0-9A-Za-z]{6}$"]
 
 localPath = "../JaakSite/"
 
-refDir = "../JaakSite/ref/"
+localRefDir = "../JaakSite/ref/"
 
-siteHost = "http://jaaks.be"
+siteHost = "http://jaakbartok.be"
 sitePath = "/inventaris/"
+siteRefPath = "/ref/"
 
 
 ################################################################################
@@ -30,6 +31,6 @@ print()
 for propFile in fileList:
     print (propFile)
     
-   # generateRefFile(refDir, siteHost + sitePath, propFile)
+    generateRefFile(localRefDir, siteHost + sitePath, propFile, localPath)
 
     generateObjectPage(propFile)

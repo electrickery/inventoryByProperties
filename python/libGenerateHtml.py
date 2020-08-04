@@ -48,7 +48,7 @@ def getFiles(dirName):
 
 
 def getNextNumber():
-    numberFile = "theNumber.txt"
+    numberFile = "../theNumber.txt"
     
     file = open(numberFile, 'r')
     count = int(file.readline().rstrip(), 16)
@@ -59,6 +59,7 @@ def getNextNumber():
     file = open(numberFile, 'w')
     file.write(hex(count))
     file.close()
+    return (str(count))
 
 def getCurrentTime():
     now = datetime.datetime.now()
@@ -93,7 +94,7 @@ def getProperties(propFile):
     return props
 
 
-def generateRefFile(refDir, sitePrefix, propFile):
+def generateRefFile(refDir, sitePrefix, propFile, localPath):
     refHtmlTemplate = """<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
 'http://www.w3.org/TR/html4/strict.dtd''> 
 <html>
@@ -107,8 +108,8 @@ def generateRefFile(refDir, sitePrefix, propFile):
 </html>"""
 
 #    print (refDir, sitePrefix, propFile)
-    siteDirs = getDirs(propFile).replace(localPath, "") + "/"
-    siteObjectHtmlFileName = sitePrefix + siteDirs + getFileName(propFile) + ".html"
+    siteDirs = getDirs(propFile).replace(localPath, "")
+    siteObjectHtmlFileName = sitePrefix + siteDirs + getFileNameBase(propFile) + ".html"
     localRefFileName = refDir + getFileNameBase(propFile) + ".html"
 #    print ("obj: " + siteObjectHtmlFileName)
 #    print ("ref: " + localRefFileName)
@@ -136,7 +137,7 @@ def generateObjectPage(propFile):
 <html>
     <head>
         <title>%%TITLE%%</title>
-        <link rel='stylesheet' type='text/css' href='./table.css'>
+        <link rel='stylesheet' type='text/css' href='/css/table.css'>
         <meta charset="UTF-8">
     </head>
     <body>
@@ -230,3 +231,7 @@ def getIdFromFilename(propFile):
     if idFound:
         id = (idFound.group(1))
     return id
+
+def sanitizeString(name):
+    #[\|\/:;=\$\!\@\#%\^\&\*\(\)\[\]]
+    return re.sub("[\|\/:;=\$\!\@\#%\^\&\*\(\)\[\]\s]", "_", name)
