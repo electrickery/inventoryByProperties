@@ -1,0 +1,144 @@
+
+
+/************** tables ********************************************************/
+
+
+/* Table is a block element by default; as inline-block it tolerates other
+ * elements next to it. */
+table {
+display: inline-block;
+border-collapse: collapse;
+border-width: 2px;
+margin-left: 0rem; 
+margin-right: 3rem;
+margin-top: 1rem; 
+margin-bottom:2rem;
+
+}
+
+/* table cell */
+td {
+border-style: solid;
+border-width: 1px;
+background-color: #ddd;
+background-color: rgba(160, 160, 160, 0.3);
+border-color: rgba(255, 255, 255, 0.3);
+padding: 5px 10px;
+}
+
+
+/************** images ********************************************************/
+
+
+/* Image is an inline element by default; as inline-block it can have margins
+ * and paddings around. */
+img {
+display: inline-block;
+max-width: 100%;
+max-height: 100%;
+margin-left: 0rem; 
+margin-right: 3rem;
+margin-top: 1rem; 
+margin-bottom: 2rem;
+}
+
+
+/***************** navigation buttons *****************************************/
+
+
+nav a{
+padding: 0.2rem;
+text-decoration: none;
+color: #000;
+background-color: rgba(160, 160, 160, 0.3);
+padding-left: 1rem;
+padding-right: 1rem;
+border-style: solid;
+border-width: 1px;
+}
+
+nav a:hover{
+background-color: rgba(255, 0, 0, 0.5);
+}
+
+
+/***************** standard element overrides **********************************
+ *
+ * Root font size is not hardcoded but left to the browser / user. Font sizes
+ * if specified are relative to root font size (unit 'rem') which is hopefully
+ * equal for all font families including monospace. */
+
+html{
+font-size: 1.1rem;
+line-height: 1.5rem;
+}
+
+/* Background image by Ewa Sajdak, www.toptal.com/designers/subtlepatterns. */
+body{
+margin-left: 5%;
+margin-right: 5%;
+margin-bottom: 10rem;
+background-image: url("./gravel.png");
+
+}
+
+p, h1, h2, h3, h4, h5, h6{
+font-weight: normal;
+max-width: 40rem;
+}
+
+/* page heading */
+h1{
+font-size: 1.8rem;
+margin-top: 2rem;
+margin-bottom: 1rem;
+margin-left: 0rem;
+margin-right: 0rem;
+}
+
+/* section heading (object name) */
+h2{
+font-size: 1.3rem;
+margin-top: 3rem;
+margin-bottom: 1rem;
+}
+
+h2:before{
+content: "object: ";
+}
+
+/* section heading (comment section) */
+h3{
+font-size: 1.3rem;
+margin-top: 2rem;
+margin-bottom: 1rem;
+}
+
+
+/***************** header *****************************************************/
+
+/* A standard header page is displayed through an iframe on each of
+the device pages. */
+
+/* header is used as container for iframe, declared on object page */
+header{
+width: 100%;
+height: 10rem;
+}
+
+/* header-iframe is positioned within header container */
+iframe.header{
+border: none;
+overflow: hidden;
+width: 100%;
+height: 100%;
+}
+
+/* body of class header is used in header.html */
+body.header{
+margin-left: 0;
+margin-right: 0;
+margin-top: 0;
+margin-bottom: 0;
+}
+
