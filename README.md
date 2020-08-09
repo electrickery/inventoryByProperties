@@ -20,11 +20,11 @@ All files referring to the same object are expected in the same directory.
 The organisation of the directory tree is not fixed, with as only exception a 'ref'
 directory, used for a passive redirect level.
 
-There are now two functional complete versions of the generating code; the original
-Perl5 version and a somewhat less messy Python version, compatible with 2.x and 3.6.
+The functional complete version of the generating code is written in Pyton, 
+compatible with 2.x and 3.6; the original prototype is written in Perl5.
 
-The main content-generating file is generateHtmlFiles.p[ly], which generates two
-files:
+The main content-generating file is generateHtmlFiles.py, which generates four
+types of files:
 
 * an HTML object-file with the same name as the object metadata file containing
   all information of the metadata file, references of the images and the
@@ -33,19 +33,19 @@ files:
 * an HTML file in the 'ref' directory containing a redirect to the HTML 
   object-file. This allows for fixed URLs, independent of the actual location
   of the files in the tree. The intention is to create QRCode labels attached
-  to the physical object.
+  to the physical object,
+* a set of category-index files, one for each category,
+* an HTML index file in the ref directory listing all objects in all categories.
   
-The 'numgen.p[ly]' and the 'theNumber.txt' file are part of the label generator, 
-which is not finished. The perDirIndex.p[ly] generates an index.html for a 
-specified directory. This has yet to be integrated into the generateHtmlFiles file.
+The 'theNumber.txt' file is part of the identifier and label generator, 
+which is not finished.
 
 The Perl version can be started from just above the perl directory, the Python
 version has to be run from the python directory.
 
-    perl generateHtml JaakSite/
-    
-    python3 generateHtml.py ../JaakSite/
+   
+    python3 python/generateHtml.py root/
 
       
-F.J. Kraan, 2020-08-01
+F.J. Kraan, 2020-08-09
       
