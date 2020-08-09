@@ -7,10 +7,14 @@ from libGenerateHtml import *
 
 
 def createObjectFile(dirBase, objectProps):
+    if ("id" in objectProps):
+        id = objectProps["id"]
+    else:
+        id = getNextNumber()
     fileName = "_".join([objectProps["fabrikant"], objectProps["model"]])
     if ("name" in objectProps):
         "_".join([fileName, objectProps["name"]])
-    fileName = dirBase + "/" + sanitizeString(fileName) + "_" + getNextNumber() + ".properties"
+    fileName = dirBase + "/" + sanitizeString(fileName) + "_" + id + ".properties"
 
     print ("fileName: " + fileName)
     file = open(fileName, 'w')
