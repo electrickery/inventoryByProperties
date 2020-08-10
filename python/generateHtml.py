@@ -434,11 +434,10 @@ dir = "."
 extensions = [".properties"]
 patterns = [".+_[[0-9A-Za-z]{6}$"]
 
-localPath = "../root/"
+localPath = "root/inventaris/"
 
-localRefDir = "../root/ref/"
+localRefDir = "root/ref/"
 
-#siteHost = "http://jaakbartok.be/"
 sitePath = "/inventaris/"
 siteRefPath = "/ref/"
 
@@ -449,16 +448,13 @@ if len(sys.argv) > 1:
 
 print (dir)
 
-originalDir = os.getcwd()
-os.chdir(dir);
-
 print()
 
-fileList = findFiles(".", extensions, patterns)
+fileList = findFiles(dir, extensions, patterns)
 
 for propFile in fileList:
-    
-    generateRefFile(localRefDir, "../", propFile, localPath)
+    print(propFile)  
+    generateRefFile(localRefDir, ".", propFile, localPath)
 
     generateObjectPage(propFile)
     
@@ -466,17 +462,11 @@ print()
 
 generateRefIndex(fileList, localRefDir)
 
-os.chdir(originalDir);
-
 print()
 
-inventDir = "inventaris"
-
-os.chdir(dir);
-subDirList = getDirectories(inventDir)
+subDirList = getDirectories(localPath)
 for subDir in subDirList:
     
     genObjectIndex(subDir)
 
 getCategorieIndex(inventDir, subDirList)
-os.chdir(originalDir)

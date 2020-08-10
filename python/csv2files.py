@@ -1,16 +1,28 @@
 #!/usr/bin/python
 #
 
+import os
+import re
+import datetime
 import sys
 
-from libGenerateHtml import *
+def getNextNumber():
+    numberFile = "theNumber.txt"
+    
+    file = open(numberFile, 'r')
+    count = int(file.readline().rstrip(), 16)
+    file.close()
+    
+    count = count + 1
+    
+    file = open(numberFile, 'w')
+    file.write(hex(count))
+    file.close()
+    return (hex(count))[2:]
 
 
 def createObjectFile(dirBase, objectProps):
-    if ("id" in objectProps):
-        id = objectProps["id"]
-    else:
-        id = getNextNumber()
+    id = getNextNumber()
     fileName = "_".join([objectProps["fabrikant"], objectProps["model"]])
     if ("name" in objectProps):
         "_".join([fileName, objectProps["name"]])
@@ -18,17 +30,26 @@ def createObjectFile(dirBase, objectProps):
 
     print ("fileName: " + fileName)
     file = open(fileName, 'w')
+    print ("id = " + id)
+    file.write("id = " + id + "\n")
     for propKey in objectProps.keys():
-        print (propKey + " = " + objectProps[propKey])
-        file.write(propKey + " = " + objectProps[propKey] + "\n")
+        if (objectProps[propKey]):
+            print (propKey + " = " + objectProps[propKey])
+            file.write(propKey + " = " + objectProps[propKey] + "\n")
     file.close()
             
+def getFileNameBase(path):
+    return os.path.splitext(os.path.basename(path))[0]
+    
+def sanitizeString(name):
+    #[\|\/:;=\$\!\@\#%\^\&\*\(\)\[\]]
+    return re.sub("[\|\/:;=\$\!\@\#%\^\&\*\(\)\[\]\s]", "_", name)
 
+################################################################################
 
-numFile = "../theNumber.txt"
 csvFile = ""
 
-targetDirBase = "../JaakSite"
+targetDirBase = "root/inventaris"
 
 if len(sys.argv) > 1:
     csvFile = sys.argv[1]
@@ -58,10 +79,11 @@ for line in lines:
         headers = line.split(";")
         headerCount = len(headers)
     else:
-        objectProps = {}
-        fields = line.split(";")
-        for i in range(headerCount):
-#            print (headers[i] + " = " + fields[i])
-            objectProps[headers[i]] = fields[i]
+        if (line.strip()):
+            objectProps = {}
+            fields = line.split(";")
+            for i in range(headerCount):
+    #            print (headers[i] + " = " + fields[i])
+                objectProps[headers[i].strip()] = fields[i].strip()
 
         createObjectFile(targetDir, objectProps)
