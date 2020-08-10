@@ -108,7 +108,11 @@ def getFileNameBase(path):
     
 def getFileNameExtension(path):
     return os.path.splitext(path)[1]
-
+    
+def getLastFromDirs(path):
+    last = getDirs(path).rsplit('/', 2)[1]
+    return last
+    
 def getProperties(propFile):
     props = {}   
     file = open(propFile, 'r')
@@ -295,7 +299,12 @@ def generateRefIndex(fileList, localRefDir):
     refIndexLineTemplate = "            <li><a href='%%REFURL%%'>%%REFNAME%%</a></li>"
     
     refIndexLines = []
+    lastCatDir = ""
     for file in fileList:
+        catDir = getLastFromDirs(file)
+        if (lastCatDir != catDir):
+            refIndexLines.append(catDir)
+            lastCatDir = catDir
         refUrl = getIdFromFilename(file) + ".html"
         refName = getFileNameBase(file)
         refIndexLines.append(refIndexLineTemplate.replace("%%REFNAME%%", refName).replace("%%REFURL%%", refUrl))
@@ -454,7 +463,7 @@ fileList = findFiles(dir, extensions, patterns)
 
 for propFile in fileList:
     print(propFile)  
-    generateRefFile(localRefDir, ".", propFile, localPath)
+    generateRefFile(localRefDir, sitePath, propFile, localPath)
 
     generateObjectPage(propFile)
     
@@ -469,4 +478,4 @@ for subDir in subDirList:
     
     genObjectIndex(subDir)
 
-getCategorieIndex(inventDir, subDirList)
+getCategorieIndex(localPath, subDirList)
