@@ -104,6 +104,34 @@ Voor het printen eerst met command `lsusb` uitzoeken op welke USB poort de print
 
 ## te doen: script
 
-Doel van het werken via command line is om het hele traject van ontwerpen en printen te automatiseren zodat de invoer van een URL met object record voldoende is om een label uit de printer te laten rollen. Daarom moet dit in een script komen (shell script of misschien Perl).
+Doel van het werken via command line is om het hele traject van ontwerpen en printen te automatiseren zodat de invoer van een URL met object record voldoende is om een label uit de printer te laten rollen. Daarom moet dit in een script komen. Vooralsnog is dit een shell script.
 
-Om het gebruik te versnellen zou het terugkerende deel van de URL in een textfile naast het script opgeslagen kunnen zijn zodat de gebruiker alleen de object ID als argument hoeft te typen. 
+	#!/bin/sh
+	#
+	
+	# ID is the generated 6-character identifier
+	# ITEM is the concatenation of three property fields: manufacturer, model and identifier.
+	# CATEGORY is the type of object, i.e. the directory in which it is placed. 
+	
+	# qrencode generates a QRcode PNG image from the URL string, Convert creates a larger image,
+	# suitable for the brother printer with the QRcode, the URL and ITEM texts. The CATEGORY text 
+	# is optional
+	
+	
+	ID=$1
+	ITEM=$2
+	CATEGORY=$3
+	URL="http://jaakbartok.be/ref/${ID}.html"
+	IMAGE=${ID}.png
+	
+	
+	qrencode -l H -v 4 -m 0 -s 7 -d 300 -o ${IMAGE} ${URL} \
+	&& convert ${IMAGE} -gravity north-west -extent 696x297 \
+ 	-pointsize 30 -annotate +5+255 ${URL} \
+ 	-annotate +270+0 "${ITEM}" \
+ 	-annotate +270+30 "${CATEGORY}" \
+ 	${IMAGE}
+	
+	~/.local/bin/brother_ql -m QL-700 -p usb://04f9:2042 -b pyusb print -l 62 ${IMAGE}
+
+
