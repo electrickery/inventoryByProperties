@@ -11,7 +11,8 @@ Brother heeft een raster API gepubliceerd voor de QL reeks. Met Python package `
 * Brother QL-700 label info
 * QR code specificaties
 * qrencode command
-* text toevoegen met imagemagick toevoegen
+* text toevoegen met imagemagick
+* printer tool brother_ql installeren
 * printen met brother_ql
 * te doen: alle commands in een script
 
@@ -31,7 +32,7 @@ printable breedte 696 pixels = 58.9 mm
 Het navolgende gaat uit van 62mm tape maar we proberen de afmeting van de QR code compatibel te houden met de 29mm labels.
 
 
-## QR code specs
+## QR code specificaties
 
 Version 3 heeft 29x29 QRdots (genaamd modules). Dit is geschikt om niet te lange URL's in te coderen met optimaal correction level. Elke version hoger heeft 4 modules meer. Correction levels bij version 3 geven in theorie de volgende ruimte:
 
@@ -42,13 +43,12 @@ Version 3 heeft 29x29 QRdots (genaamd modules). Dit is geschikt om niet te lange
 
 Compleet overzicht van version/level combinaties op:
 
-www.qrcode.com/en/about/version.html
+<https://www.qrcode.com/en/about/version.html>
 
 Maar let op: in de praktijk lukt het niet om met `qrencode` zoveel karakters in de code te krijgen! Daarom is het veiliger om version 4 (met 33 modules) te gebruiken als je een consistente afmeting wil hebben.
 
 
 ## qrencode
-
 
 We willen een QR code met 33 modules (version 4) genereren op maximaal 306 pixels zodat het eventueel op de printable area van de smalle labels past. Er blijft buiten de printable area genoeg marge over die de QR code nodig heeft om leesbaar te zijn.
 
@@ -57,7 +57,6 @@ Met 9 print-pixels per module kom je op 297 pixels. Het is niet mogelijk om exac
     qrencode --level=H --symversion=4 --margin=0 --size=9 --dpi=300 --output=qr.png 'www.katjaas.nl'
 
     qrencode -l H -v 4 -m 0 -s 9 -d 300 -o qr.png 'www.katjaas.nl'
-
 
 
     --level=H: correction level (L M Q H, default is L)
@@ -73,8 +72,8 @@ Met 9 print-pixels per module kom je op 297 pixels. Het is niet mogelijk om exac
 
 Op hetzelfde label willen we ook human-readable tekst erbij voor de URL en misschien nog andere dingen. De aangewezen command line tool hiervoor is imagemagick's `convert`.
 
-www.imagemagick.org/Usage/crop/#extent
-www.imagemagick.org/Usage/text/#annotate
+<https://www.imagemagick.org/Usage/crop/#extent>
+<https://www.imagemagick.org/Usage/text/#annotate>
 
 Eerst moet er wat ruimte aan het QR plaatje geplakt worden om tot de uiteindelijke labelmaat te komen. Voor de continuous tape ligt de labelbreedte vast op 696 pixels. De hoogte van de QR afbeelding kan gehandhaafd blijven want de printer voegt zelf marges toe bij het afsnijden. Dus 696x297 pixels. Het QR plaatje moet links liggen. Daarna plakken we met "convert annotate" de tekst erop.
 
@@ -89,13 +88,35 @@ Een lange URL moet in meerdere regels opgedeeld worden. Opdelen kan met de newli
     -annotate +320+80 'DIYmic/DIYmic.html' label.png
 
 
+## installeren van brother_ql
+
+Voor installatie van `brother_ql` lees eerst de instructies op de repository:
+
+<https://github.com/pklaus/brother_ql>
+
+Vanwege ontwikkelingen in python kan deze informatie verouderd zijn. Package brother_ql staat niet in system repositories en daarom gebruik je python's eigen package manager pip voor het installeren van zo'n package plus dependencies. Sinds python 3.11 is het echter moeilijker om packages te installeren met pip. Dit moet nu in een 'virtual environment' om dependency conflicten met de system package manager te voorkomen. Lees eerst dit:
+
+<https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/>
+
+Benodigd package python3-venv staat wel in de Debian repo. Ik heb een directory gemaakt ~/python/brother_ql en vervolgens het command om de virtual python environment te maken:
+
+    $ python3 -m venv ~/python/brother_ql
+
+Dit maakt een directory tree met python3 en andere benodigdheden. Environment activeren en brother_ql daarin installeren:
+
+    $ source ~/python/brother_ql/bin/activate
+    $ python3 -m pip install brother_ql
+
+Vanuit deze environment kan je uiteraard niet alleen installeren maar ook package brother_ql gebruiken om labels te printen. Om later uit de virtual environment te gaan:
+
+    $ deactivate
+
+Eenmaal geinstalleerd kan brother_ql ook gebruikt worden zonder de virtual environment te activeren. Je moet dan het volledige pad van het command opgeven. In mijn voorbeeld:
+
+    ~/python/brother_ql/bin/brother_ql
+
+
 ## printen
-
-Voor installatie van `brother_ql` volg de complete instructies op de repository:
-
-https://github.com/pklaus/brother_ql
-
-Mogelijk moet `pip` aangeroepen worden als `pip3`.
 
 Voor het printen eerst met command `lsusb` uitzoeken op welke USB poort de printer zit. Bijvoorbeeld poort 04f9:2042, en met de continuous rol van 62 mm breed:
 
@@ -132,6 +153,7 @@ Doel van het werken via command line is om het hele traject van ontwerpen en pri
  	-annotate +270+30 "${CATEGORY}" \
  	${IMAGE}
 	
-	~/.local/bin/brother_ql -m QL-700 -p usb://04f9:2042 -b pyusb print -l 62 ${IMAGE}
+	~/python/brother_ql/bin/brother_ql -m QL-700 -p usb://04f9:2042 -b pyusb print -l 62 ${IMAGE}
 
 
+Katja Vetter september 2023
