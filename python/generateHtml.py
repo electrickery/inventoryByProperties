@@ -123,6 +123,8 @@ def getProperties(propFile):
             continue
         line = line.rstrip()
         if (re.match("^\W*", line)):
+            if (len(re.split("\w*=\w*", line)) > 2):
+                print("Error: '" + line + "'")
             (key, value) = re.split("\w*=\w*", line)
             props[key.strip()] =  value.strip()
         
