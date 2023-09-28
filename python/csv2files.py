@@ -83,7 +83,7 @@ for line in lines:
             objectProps = {}
             fields = line.split(";")
             for i in range(headerCount):
-    #            print (headers[i] + " = " + fields[i])
+                print (headers[i] + " = " + fields[i])
                 objectProps[headers[i].strip()] = fields[i].strip()
 
         createObjectFile(targetDir, objectProps)
