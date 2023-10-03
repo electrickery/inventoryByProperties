@@ -5,7 +5,7 @@ import re
 import datetime
 import sys
 
-version = "1.0"
+version = "1.1"
 script  = "updateRefDir.py"
 
 localRefDir = "root/ref/"
@@ -37,7 +37,7 @@ indexPostfix = """        </ul>
 </html>
 """
 
-indexTemplate = """            <li><a href='%%URL%%'>%%FILENAME%%</a></li>
+indexTemplate = """            <li><a href='../%%URL%%'>%%FILENAME%%</a></li>
 """
 
 def findFiles(base, extensions, filters):
