@@ -20,8 +20,8 @@ import re
 import datetime
 import sys
 
-version = "1.0"
-script  = "generateInventory.py"
+version = "1.1"
+script  = "generateHtml.py"
 
 ################################################################################
 
